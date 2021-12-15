@@ -1,6 +1,6 @@
 # OctoPrint-Printer_poweroff
 
-**TODO:** Describe what your plugin does.
+Octoprint plugin to power off printer after successful print. Works with Meross smart plugs.
 
 ## Setup
 

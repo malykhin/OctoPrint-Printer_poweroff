@@ -54,9 +54,11 @@ class PowerOffPlugin(
         return [dict(type="settings", custom_bindings=False)]
 
     def on_event(self, event, payload):
-        print(event)
         if event == "PrintDone":
             self._logger.info("Print finished")
+
+            if not self._settings.get(["enabled"]):
+                return
 
             asyncio.run(
                 SocketCommunicator(
