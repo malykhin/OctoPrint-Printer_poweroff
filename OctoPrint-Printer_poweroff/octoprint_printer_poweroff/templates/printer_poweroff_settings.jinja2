@@ -1,0 +1,32 @@
+<form class="form-horizontal">
+    <div class="control-group">
+        <label class="control-label">{{ _('Device Name') }}</label>
+        <div class="controls">
+            <input type="text" class="input-block-level" data-bind="value: settings.plugins.printer_poweroff.device_name">
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">{{ _('Meross Email') }}</label>
+        <div class="controls">
+            <input type="text" class="input-block-level" data-bind="value: settings.plugins.printer_poweroff.meross_email">
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">{{ _('Meross Password') }}</label>
+        <div class="controls">
+            <input type="password" class="input-block-level" data-bind="value: settings.plugins.printer_poweroff.meross_password">
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">{{ _('Power Off Delay') }}</label>
+        <div class="controls">
+            <input type="text" class="input-block-level" data-bind="value: settings.plugins.printer_poweroff.power_off_delay">
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">{{ _('Enabled') }}</label>
+        <div class="controls">
+            <input type="checkbox" class="input-block-level" style="margin-top: 0" data-bind="checked: settings.plugins.printer_poweroff.enabled">
+        </div>
+    </div>
+</form>

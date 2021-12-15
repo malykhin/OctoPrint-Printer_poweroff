@@ -1,0 +1,4 @@
+include README.md
+recursive-include octoprint_printer_poweroff/templates *
+recursive-include octoprint_printer_poweroff/translations *
+recursive-include octoprint_printer_poweroff/static *
