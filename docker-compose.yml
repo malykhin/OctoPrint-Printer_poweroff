@@ -6,7 +6,7 @@ services:
     command: serve --port 8080
     volumes:
       - ./tmp/octoprint:/home/octoprint/.octoprint
-      - ./OctoPrint-Printer_poweroff:/OctoPrint-Printer_poweroff
+      - ./:/OctoPrint-Printer_poweroff
     ports:
       - 8080:8080
     

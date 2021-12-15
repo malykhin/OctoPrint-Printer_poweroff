@@ -6,6 +6,5 @@ build
 dist
 *.egg*
 .DS_Store
-*.zip
 
 tmp

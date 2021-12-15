@@ -11,7 +11,7 @@ WORKDIR /OctoPrint
 
 RUN pip install -e .[develop,plugins] argh
 
-COPY ./OctoPrint-Printer_poweroff /OctoPrint-Printer_poweroff
+COPY ./ /OctoPrint-Printer_poweroff
 
 WORKDIR /OctoPrint-Printer_poweroff
 
