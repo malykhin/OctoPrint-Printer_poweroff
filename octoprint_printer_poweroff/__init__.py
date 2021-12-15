@@ -71,5 +71,6 @@ class PowerOffPlugin(
 
 
 __plugin_name__ = "Printer Power Off"
+__plugin_version__ = "0.1.1"
 __plugin_pythoncompat__ = ">=2.7,<4"
 __plugin_implementation__ = PowerOffPlugin()
