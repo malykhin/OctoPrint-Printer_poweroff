@@ -11,37 +11,60 @@ device_name = ""
 meross_email = ""
 meross_password = ""
 
-max_extruder_temp = 0
-max_bed_temp = 0
+DEFAULT_MAX_EXTRUDER_TEMP = 300
+DEFAULT_MAX_BED_TEMP = 80
+
+max_extruder_temp = DEFAULT_MAX_EXTRUDER_TEMP
+max_bed_temp = DEFAULT_MAX_BED_TEMP
+
+lock = asyncio.Lock()
 
 
 class SocketCommunicator():
-    def __init__(self, name, email, password, delay, logger):
+    def __init__(self, name, email, password, delay, logger, retry=True):
         self._name = name
         self._email = email
         self._password = password
         self._delay = delay
         self._logger = logger
+        self._retry = retry
 
     async def power_off(self):
-        http_api_client = await MerossHttpClient.async_from_user_password(email=self._email, password=self._password)
-        manager = MerossManager(http_client=http_api_client)
-        await manager.async_init()
+        if lock.locked():
+            self._logger("Power off is already in progress, skipping...")
+            return
 
-        await manager.async_device_discovery()
-        plugs = manager.find_devices(device_name=self._name)
+        await lock.acquire()
 
-        if len(plugs) < 1:
-            self._logger("No killswitch found...")
-        else:
-            dev = plugs[0]
-            await dev.async_update()
-            self._logger("Turning printer off...")
-            await asyncio.sleep(self._delay)
-            await dev.async_turn_off(channel=0)
+        try:
+            http_api_client = await MerossHttpClient.async_from_user_password(email=self._email, password=self._password)
+            manager = MerossManager(http_client=http_api_client)
+            await manager.async_init()
 
-        manager.close()
-        await http_api_client.async_logout()
+            await manager.async_device_discovery()
+            plugs = manager.find_devices(device_name=self._name)
+
+            if len(plugs) < 1:
+                self._logger("No killswitch found...")
+            else:
+                dev = plugs[0]
+                await dev.async_update()
+                self._logger("Turning printer off...")
+                await asyncio.sleep(self._delay)
+                await dev.async_turn_off(channel=0)
+
+            manager.close()
+            await http_api_client.async_logout()
+
+        except:
+            if not self._retry:
+                return
+            self._logger("Error during powering off, retrying...")
+            await asyncio.sleep(2)
+            await self.power_off()
+
+        finally:
+            lock.release()
 
 
 class PowerOffPlugin(
@@ -56,8 +79,8 @@ class PowerOffPlugin(
             meross_email="email",
             meross_password="password",
             power_off_delay=5,
-            max_extruder_temp=300,
-            max_bed_temp=100,
+            max_extruder_temp=DEFAULT_MAX_EXTRUDER_TEMP,
+            max_bed_temp=DEFAULT_MAX_BED_TEMP,
             enabled=False
         )
 
@@ -101,17 +124,21 @@ class PowerOffPlugin(
 
 
 def temperature_guard(comm, parsed_temps):
+    if not 'B' in parsed_temps or not 'T0' in parsed_temps:
+        print("Can not find correct temperature keys, skipping...")
+        return
     actual_bed_temp = int(parsed_temps['B'][0])
     actual_extruder_temp = int(parsed_temps['T0'][0])
-
-    if actual_bed_temp > max_bed_temp or actual_extruder_temp > max_extruder_temp:
+    if (actual_bed_temp > max_bed_temp) or (actual_extruder_temp > max_extruder_temp):
+        print("Owerheated, shutting down...")
         asyncio.run(
             SocketCommunicator(
                 device_name,
                 meross_email,
                 meross_password,
                 1,
-                print
+                print,
+                False
             ).power_off())
 
 

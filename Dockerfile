@@ -3,8 +3,7 @@ FROM alpine:latest
 ARG USER=octoprint
 
 RUN adduser --disabled-password "$USER"
-
-RUN apk update && apk upgrade && apk add --update --no-cache python3 py3-pip git py3-virtualenv py3-wheel python3-dev musl-dev linux-headers gcc g++ 	libffi-dev
+RUN apk update && apk upgrade && apk add --update --no-cache python3 py3-pip git py3-virtualenv py3-wheel python3-dev musl-dev linux-headers gcc g++ libffi-dev openssl-dev cargo
 RUN git clone https://github.com/OctoPrint/OctoPrint
 
 WORKDIR /OctoPrint
