@@ -34,7 +34,7 @@ plugin_url = "https://github.com/malykhin/OctoPrint-Printer_poweroff"
 plugin_license = "AGPLv3"
 
 # Any additional requirements besides OctoPrint should be listed here
-plugin_requires = ["meross_iot", "ndg-httpsclient", "pyopenssl", "pyasn1"]
+plugin_requires = ["meross_iot", "ndg-httpsclient", "pyopenssl"]
 
 # --------------------------------------------------------------------------------------------------------------------
 # More advanced options that you usually shouldn't have to touch follow after this point
