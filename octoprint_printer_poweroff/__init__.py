@@ -141,6 +141,8 @@ def temperature_guard(comm, parsed_temps):
                 False
             ).power_off())
 
+    return parsed_temps
+
 
 __plugin_name__ = "Printer Power Off"
 __plugin_version__ = "0.1.1"
